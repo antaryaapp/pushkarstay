@@ -1,0 +1,16 @@
+{
+    "name": "PushkarStay Hostel PMS",
+    "short_name": "PushkarStay",
+    "description": "Hostel Management System",
+    "start_url": "/dashboard",
+    "display": "standalone",
+    "background_color": "#ffffff",
+    "theme_color": "#2563eb",
+    "icons": [
+        {
+            "src": "/globe.svg",
+            "sizes": "any",
+            "type": "image/svg+xml"
+        }
+    ]
+}

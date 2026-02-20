@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">PushkarStay PMS</string>
+    <string name="title_activity_main">PushkarStay PMS</string>
+    <string name="package_name">com.pushkarstay.app</string>
+    <string name="custom_url_scheme">com.pushkarstay.app</string>
+</resources>

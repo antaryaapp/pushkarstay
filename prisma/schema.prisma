@@ -1,0 +1,75 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Staff {
+  id        String   @id @default(uuid())
+  username  String   @unique
+  password  String
+  createdAt DateTime @default(now())
+}
+
+model Room {
+  id         Int        @id @default(autoincrement())
+  roomNumber String     @unique
+  hasBalcony Boolean    @default(false)
+  price      Float      @default(0)
+  status     String     @default("AVAILABLE") // AVAILABLE, OCCUPIED
+  guests     Guest[]
+}
+
+model DormBed {
+  id          Int      @id @default(autoincrement())
+  floorNumber Int
+  bedNumber   Int
+  type        String   // LOWER, UPPER
+  price       Float    @default(0)
+  status      String   @default("AVAILABLE") // AVAILABLE, OCCUPIED
+  guests      Guest[]
+}
+
+model Guest {
+  id                String    @id @default(uuid())
+  name              String
+  mobile            String    @default("")
+  city              String    @default("")
+  paymentMode       String    @default("CASH") // CASH, UPI, CARD
+  checkInDate       DateTime  @default(now())
+  checkOutDate      DateTime?
+  status            String    @default("CHECKED_IN") // CHECKED_IN, CHECKED_OUT
+  totalBill         Float     @default(0)
+  
+  // Relations
+  roomId            Int?
+  room              Room?     @relation(fields: [roomId], references: [id])
+  
+  dormBedId         Int?
+  dormBed           DormBed?  @relation(fields: [dormBedId], references: [id])
+  
+  orders            FoodOrder[]
+}
+
+model FoodOrder {
+  id          String   @id @default(uuid())
+  guestId     String
+  guest       Guest    @relation(fields: [guestId], references: [id])
+  items       String   // JSON string of items
+  totalAmount Float    @default(0)
+  status      String   @default("PENDING") // PENDING, COMPLETED, CANCELLED
+  createdAt   DateTime @default(now())
+}
+
+model MenuItem {
+  id          Int      @id @default(autoincrement())
+  name        String
+  category    String   // Breakfast, Lunch, Dinner, Beverages, Snacks
+  price       Float
+  isAvailable Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}

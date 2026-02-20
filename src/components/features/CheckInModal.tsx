@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { X } from 'lucide-react'
+import { X, Download, UserCheck, UserMinus } from 'lucide-react'
 
 interface CheckInModalProps {
     item: any
@@ -128,28 +128,31 @@ export function CheckInModal({ item, onClose, onUpdate }: CheckInModalProps) {
     }
 
     return (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
-            <div className="bg-white rounded-xl shadow-xl w-full max-w-md p-6 relative max-h-[90vh] overflow-y-auto border-2 border-yellow-200">
-                <button onClick={onClose} className="absolute top-4 right-4 text-gray-400 hover:text-black">
+        <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+            <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md p-6 relative max-h-[90vh] overflow-y-auto border border-amber-100">
+                <button onClick={onClose} className="absolute top-4 right-4 p-1.5 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors">
                     <X className="w-5 h-5" />
                 </button>
 
-                <h2 className="text-xl font-black mb-4 text-black">{title}</h2>
+                <h2 className="text-xl font-black text-gray-800 mb-1">{title}</h2>
+                <p className="text-xs text-gray-400 font-medium mb-4">
+                    {isOccupied ? 'Currently occupied' : 'Available for check-in'}
+                </p>
 
                 {isOccupied ? (
                     <div>
-                        <div className="bg-yellow-50 p-4 rounded-lg mb-4 space-y-2 border border-yellow-100">
-                            <label className="text-sm font-bold text-gray-600 block">Current Guest</label>
-                            <p className="text-lg font-black text-black">{guest?.name || 'Unknown'}</p>
+                        <div className="bg-gradient-to-br from-amber-50 to-orange-50 p-4 rounded-xl mb-4 space-y-2 border border-amber-100">
+                            <label className="text-xs font-semibold text-gray-500 block uppercase tracking-wider">Current Guest</label>
+                            <p className="text-lg font-black text-gray-800">{guest?.name || 'Unknown'}</p>
 
-                            <div className="grid grid-cols-2 gap-2 text-sm">
-                                <div>
-                                    <span className="text-gray-600 font-bold block text-xs">Mobile</span>
-                                    <span className="text-black font-medium">{guest?.mobile || '-'}</span>
+                            <div className="grid grid-cols-2 gap-3 text-sm">
+                                <div className="bg-white/60 rounded-lg p-2">
+                                    <span className="text-gray-400 font-semibold block text-xs">Mobile</span>
+                                    <span className="text-gray-700 font-medium">{guest?.mobile || '-'}</span>
                                 </div>
-                                <div>
-                                    <span className="text-gray-600 font-bold block text-xs">Payment</span>
-                                    <span className="text-black font-medium">{guest?.paymentMode || 'CASH'}</span>
+                                <div className="bg-white/60 rounded-lg p-2">
+                                    <span className="text-gray-400 font-semibold block text-xs">Payment</span>
+                                    <span className="text-gray-700 font-medium">{guest?.paymentMode || 'CASH'}</span>
                                 </div>
                             </div>
                         </div>
@@ -158,36 +161,44 @@ export function CheckInModal({ item, onClose, onUpdate }: CheckInModalProps) {
                             <button
                                 onClick={fetchBill}
                                 disabled={loading}
-                                className="w-full bg-black text-white py-3 rounded-lg font-bold hover:bg-gray-800 transition mb-2"
+                                className="w-full bg-gradient-to-r from-amber-500 to-orange-500 text-white py-3 rounded-xl font-bold hover:from-amber-600 hover:to-orange-600 transition-all mb-2 shadow-lg shadow-amber-200/50 disabled:opacity-50 active:scale-[0.98]"
                             >
-                                {loading ? 'Loading...' : 'View Bill & Checkout'}
+                                {loading ? (
+                                    <span className="flex items-center justify-center gap-2">
+                                        <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                                        Loading...
+                                    </span>
+                                ) : (
+                                    <span className="flex items-center justify-center gap-2">
+                                        <UserMinus className="w-4 h-4" />
+                                        View Bill & Checkout
+                                    </span>
+                                )}
                             </button>
                         ) : (
-                            <div className="bg-yellow-50 p-4 rounded-lg mb-4 border border-yellow-200">
-                                <h3 className="font-bold mb-2 text-black">Final Bill Summary</h3>
-                                <div className="space-y-1 text-sm text-black">
-                                    <div className="flex justify-between">
-                                        <span>Stay ({billData?.nights} nights @ {billData?.pricePerNight})</span>
-                                        <span>₹{billData?.accommodationTotal}</span>
+                            <div className="bg-gray-50 p-4 rounded-xl mb-4 border border-gray-100">
+                                <h3 className="font-bold mb-3 text-gray-800 text-sm uppercase tracking-wider">Final Bill Summary</h3>
+                                <div className="space-y-2 text-sm text-gray-700">
+                                    <div className="flex justify-between py-1">
+                                        <span>Stay ({billData?.nights} nights @ ₹{billData?.pricePerNight})</span>
+                                        <span className="font-semibold">₹{billData?.accommodationTotal}</span>
                                     </div>
-                                    <div className="flex justify-between items-center text-black bg-yellow-100 p-2 rounded border border-yellow-200">
-                                        <span className="font-bold">Food Orders Total</span>
-                                        <span className="font-black">₹{billData?.foodTotal}</span>
+                                    <div className="flex justify-between items-center bg-amber-50 p-2.5 rounded-lg border border-amber-100">
+                                        <span className="font-semibold text-gray-800">Food Orders</span>
+                                        <span className="font-bold text-gray-800">₹{billData?.foodTotal}</span>
                                     </div>
 
                                     {/* Detailed Food Items */}
                                     {billData?.orders && billData.orders.length > 0 && (
-                                        <div className="pl-2 border-l-2 border-yellow-300 mt-1 mb-2 space-y-1">
+                                        <div className="pl-3 border-l-2 border-amber-200 mt-1 mb-2 space-y-1">
                                             {billData.orders.map((order: any) => {
                                                 try {
                                                     const items = JSON.parse(order.items)
                                                     return items.map((item: any, idx: number) => {
-                                                        if (typeof item === 'string') {
-                                                            return null // Hide legacy string items as per user request
-                                                        }
+                                                        if (typeof item === 'string') return null
                                                         return (
-                                                            <div key={`${order.id}-${idx}`} className="flex justify-between text-xs text-black font-medium">
-                                                                <span>{item.name} x {item.qty}</span>
+                                                            <div key={`${order.id}-${idx}`} className="flex justify-between text-xs text-gray-500">
+                                                                <span>{item.name} × {item.qty}</span>
                                                                 <span>₹{item.price * item.qty}</span>
                                                             </div>
                                                         )
@@ -196,25 +207,34 @@ export function CheckInModal({ item, onClose, onUpdate }: CheckInModalProps) {
                                             })}
                                         </div>
                                     )}
-                                    <div className="flex justify-between font-black text-lg pt-2 border-t border-yellow-200 mt-2 text-black">
+
+                                    <div className="flex justify-between font-black text-lg pt-3 border-t-2 border-gray-200 mt-3 text-gray-800">
                                         <span>Total to Pay</span>
-                                        <span>₹{billData?.totalBill}</span>
+                                        <span className="text-amber-600">₹{billData?.totalBill}</span>
                                     </div>
                                 </div>
 
                                 <div className="grid grid-cols-2 gap-3 mt-4">
                                     <button
                                         onClick={downloadBill}
-                                        className="w-full bg-white border border-gray-300 text-black py-3 rounded-lg font-bold hover:bg-gray-50 transition-colors"
+                                        className="flex items-center justify-center gap-2 w-full bg-white border border-gray-200 text-gray-700 py-3 rounded-xl font-semibold hover:bg-gray-50 transition-colors active:scale-[0.98]"
                                     >
-                                        Download Bill
+                                        <Download className="w-4 h-4" />
+                                        Download
                                     </button>
                                     <button
                                         onClick={handleCheckOut}
                                         disabled={loading}
-                                        className="w-full bg-red-600 text-white py-3 rounded-lg font-bold hover:bg-red-700 disabled:opacity-50 transition-colors"
+                                        className="flex items-center justify-center gap-2 w-full bg-red-500 text-white py-3 rounded-xl font-bold hover:bg-red-600 disabled:opacity-50 transition-colors active:scale-[0.98]"
                                     >
-                                        {loading ? 'Processing...' : 'Confirm Checkout'}
+                                        {loading ? (
+                                            <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                                        ) : (
+                                            <>
+                                                <UserMinus className="w-4 h-4" />
+                                                Checkout
+                                            </>
+                                        )}
                                     </button>
                                 </div>
                             </div>
@@ -222,15 +242,14 @@ export function CheckInModal({ item, onClose, onUpdate }: CheckInModalProps) {
                     </div>
                 ) : (
                     <form onSubmit={handleCheckIn} className="space-y-4">
-                        {/* Check-in Form Fields */}
                         <div>
-                            <label className="block text-sm font-bold text-black mb-1">Guest Name</label>
+                            <label className="block text-sm font-semibold text-gray-600 mb-1.5">Guest Name</label>
                             <input
                                 type="text"
                                 required
                                 value={guestName}
                                 onChange={(e) => setGuestName(e.target.value)}
-                                className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-400 outline-none text-black font-medium placeholder:text-gray-500"
+                                className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-amber-400 focus:border-amber-400 outline-none text-gray-800 font-medium bg-gray-50/50 transition-all placeholder:text-gray-400"
                                 placeholder="Enter guest name"
                                 autoFocus
                             />
@@ -238,33 +257,33 @@ export function CheckInModal({ item, onClose, onUpdate }: CheckInModalProps) {
 
                         <div className="grid grid-cols-2 gap-3">
                             <div>
-                                <label className="block text-sm font-bold text-black mb-1">Mobile Number</label>
+                                <label className="block text-sm font-semibold text-gray-600 mb-1.5">Mobile</label>
                                 <input
                                     type="text"
                                     value={mobile}
                                     onChange={(e) => setMobile(e.target.value)}
-                                    className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-400 outline-none text-black font-medium placeholder:text-gray-500"
+                                    className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-amber-400 focus:border-amber-400 outline-none text-gray-800 font-medium bg-gray-50/50 transition-all placeholder:text-gray-400"
                                     placeholder="9876543210"
                                 />
                             </div>
                             <div>
-                                <label className="block text-sm font-bold text-black mb-1">City</label>
+                                <label className="block text-sm font-semibold text-gray-600 mb-1.5">City</label>
                                 <input
                                     type="text"
                                     value={city}
                                     onChange={(e) => setCity(e.target.value)}
-                                    className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-400 outline-none text-black font-medium placeholder:text-gray-500"
+                                    className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-amber-400 focus:border-amber-400 outline-none text-gray-800 font-medium bg-gray-50/50 transition-all placeholder:text-gray-400"
                                     placeholder="e.g. Mumbai"
                                 />
                             </div>
                         </div>
 
                         <div>
-                            <label className="block text-sm font-bold text-black mb-1">Payment Mode</label>
+                            <label className="block text-sm font-semibold text-gray-600 mb-1.5">Payment Mode</label>
                             <select
                                 value={paymentMode}
                                 onChange={(e) => setPaymentMode(e.target.value)}
-                                className="w-full p-2 border border-gray-300 rounded-lg bg-white focus:ring-2 focus:ring-yellow-400 outline-none text-black font-medium"
+                                className="w-full px-4 py-3 border border-gray-200 rounded-xl bg-gray-50/50 focus:ring-2 focus:ring-amber-400 focus:border-amber-400 outline-none text-gray-800 font-medium transition-all"
                             >
                                 <option value="CASH">Cash</option>
                                 <option value="UPI">Online (UPI)</option>
@@ -275,9 +294,19 @@ export function CheckInModal({ item, onClose, onUpdate }: CheckInModalProps) {
                         <button
                             type="submit"
                             disabled={loading}
-                            className="w-full bg-black text-white py-3 rounded-lg font-bold hover:bg-gray-800 transition disabled:opacity-50"
+                            className="w-full bg-gradient-to-r from-amber-500 to-orange-500 text-white py-3 rounded-xl font-bold hover:from-amber-600 hover:to-orange-600 transition-all disabled:opacity-50 shadow-lg shadow-amber-200/50 active:scale-[0.98]"
                         >
-                            {loading ? 'Processing...' : 'Complete Check-in'}
+                            {loading ? (
+                                <span className="flex items-center justify-center gap-2">
+                                    <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                                    Processing...
+                                </span>
+                            ) : (
+                                <span className="flex items-center justify-center gap-2">
+                                    <UserCheck className="w-4 h-4" />
+                                    Complete Check-in
+                                </span>
+                            )}
                         </button>
                     </form>
                 )}

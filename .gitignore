@@ -54,3 +54,5 @@ get-*.ts
 parse-*.js
 *.log
 dashboard.json
+
+.vercel

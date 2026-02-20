@@ -13,27 +13,43 @@ export function BedCard({ data, onSelect }: BedCardProps) {
         <div
             onClick={() => onSelect(data)}
             className={`
-        relative p-3 rounded-lg border-2 cursor-pointer transition-all hover:shadow-sm bg-white
-        ${isOccupied ? 'border-red-400' : 'border-green-400'}
-      `}
+                relative p-3 rounded-xl border-2 cursor-pointer transition-all duration-200
+                hover:shadow-md hover:-translate-y-0.5 active:scale-[0.98]
+                ${isOccupied
+                    ? 'border-red-200 bg-red-50/50 hover:border-red-300'
+                    : 'border-emerald-200 bg-emerald-50/30 hover:border-emerald-300'
+                }
+            `}
         >
-            <div className="flex justify-between items-center mb-1">
-                <span className="font-black text-black text-sm">Bed {data.bedNumber}</span>
-                <span className={`text-[10px] uppercase font-bold px-1.5 py-0.5 rounded border ${data.type === 'LOWER' ? 'bg-indigo-50 border-indigo-200 text-indigo-900' : 'bg-orange-50 border-orange-200 text-orange-900'}`}>
+            <div className="flex justify-between items-center mb-1.5">
+                <span className="font-bold text-gray-800 text-sm">Bed {data.bedNumber}</span>
+                <span className={`
+                    text-[9px] uppercase font-bold px-1.5 py-0.5 rounded-full tracking-wider
+                    ${data.type === 'LOWER'
+                        ? 'bg-indigo-100 text-indigo-700 border border-indigo-200'
+                        : 'bg-orange-100 text-orange-700 border border-orange-200'
+                    }
+                `}>
                     {data.type}
                 </span>
             </div>
 
             <div className="text-xs">
                 {isOccupied ? (
-                    <div className="flex items-center gap-1 text-red-700 truncate">
-                        <User className="w-4 h-4" />
-                        <span className="truncate max-w-[80px] font-bold text-black">{guestName}</span>
+                    <div className="flex items-center gap-1.5">
+                        <div className="w-5 h-5 bg-red-100 rounded-full flex items-center justify-center flex-shrink-0">
+                            <User className="w-3 h-3 text-red-500" />
+                        </div>
+                        <span className="truncate max-w-[80px] font-semibold text-gray-700">{guestName}</span>
                     </div>
                 ) : (
-                    <span className="text-green-700 font-bold">Available</span>
+                    <span className="text-emerald-600 font-semibold">Available</span>
                 )}
             </div>
+
+            {data.price > 0 && (
+                <div className="mt-1.5 text-[10px] text-gray-400 font-medium">₹{data.price}/night</div>
+            )}
         </div>
     )
 }

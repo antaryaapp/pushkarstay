@@ -2,16 +2,13 @@
 
 import { useState } from 'react'
 import useSWR from 'swr'
-import { Plus, Trash2 } from 'lucide-react'
-import { MENU_ITEMS } from '@/lib/menu' // We need to expose this to frontend or duplicate it. 
-// Ideally via API, but for MVP importing from lib is fine if it's shared code. 
-// Next.js allows importing lib files in client components if they don't use server-only modules.
-// Let's assume MENU_ITEMS is safe.
+import { Plus, Trash2, ShoppingCart, ArrowLeft, CheckCircle } from 'lucide-react'
 
 const fetcher = (url: string) => fetch(url).then(r => r.json())
 
 export default function GuestOrderPage() {
     const { data: dashboard } = useSWR('/api/dashboard', fetcher)
+    const { data: menuItems } = useSWR('/api/menu', fetcher)
 
     const [selectedGuestId, setSelectedGuestId] = useState('')
     const [cart, setCart] = useState<{ id: string, name: string, price: number, qty: number }[]>([])
@@ -38,8 +35,6 @@ export default function GuestOrderPage() {
             }
         })
     }
-
-    const { data: menuItems } = useSWR('/api/menu', fetcher)
 
     const addToCart = (item: any) => {
         setCart(prev => {
@@ -81,17 +76,15 @@ export default function GuestOrderPage() {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     guestId: selectedGuestId,
-                    items: cart // Sending full object {id, name, price, qty}
+                    items: cart
                 })
             })
 
-            if (!res.ok) {
-                throw new Error('Failed to place order')
-            }
+            if (!res.ok) throw new Error('Failed to place order')
 
             setSuccess(true)
             setCart([])
-            setTimeout(() => setSuccess(false), 3000)
+            setTimeout(() => setSuccess(false), 4000)
         } catch (error) {
             console.error(error)
             alert('Order failed. Please try again.')
@@ -101,89 +94,125 @@ export default function GuestOrderPage() {
     }
 
     return (
-        <div className="min-h-screen bg-yellow-50 p-4 font-sans">
-            <div className="max-w-7xl mx-auto">
-                <div className="bg-white rounded-xl shadow-lg border border-yellow-200 overflow-hidden flex flex-col md:flex-row h-[800px]">
-                    {/* Left Side: Order Form */}
-                    <div className="md:w-1/3 bg-yellow-100 p-6 text-black flex flex-col gap-6 overflow-y-auto border-r border-yellow-200">
+        <div className="min-h-screen bg-gradient-to-br from-amber-50 via-orange-50 to-yellow-50">
+            {/* Header */}
+            <header className="bg-white/80 backdrop-blur-xl border-b border-amber-100 sticky top-0 z-30 px-4 py-3 shadow-sm">
+                <div className="max-w-7xl mx-auto flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                        <a href="/" className="p-2 hover:bg-amber-50 rounded-xl transition-colors">
+                            <ArrowLeft className="w-5 h-5 text-gray-600" />
+                        </a>
                         <div>
-                            <h1 className="text-2xl font-black mb-1">Order Food</h1>
-                            <p className="text-gray-600 text-sm mb-6 font-medium">Select room/bed & items.</p>
+                            <h1 className="text-lg font-black bg-gradient-to-r from-amber-600 to-orange-500 bg-clip-text text-transparent">
+                                PushkarStay
+                            </h1>
+                            <p className="text-xs text-gray-400 font-medium">Guest Food Ordering</p>
+                        </div>
+                    </div>
 
+                    {/* Cart badge (mobile) */}
+                    {cart.length > 0 && (
+                        <div className="flex items-center gap-2 bg-amber-500 text-white px-3 py-1.5 rounded-full text-sm font-bold shadow-md md:hidden">
+                            <ShoppingCart className="w-4 h-4" />
+                            {cart.length} • ₹{total}
+                        </div>
+                    )}
+                </div>
+            </header>
+
+            <div className="max-w-7xl mx-auto p-4">
+                {/* Success Banner */}
+                {success && (
+                    <div className="mb-4 bg-emerald-500 text-white p-4 rounded-2xl text-center font-bold shadow-lg shadow-emerald-200 flex items-center justify-center gap-2 animate-bounce-in">
+                        <CheckCircle className="w-5 h-5" />
+                        Order placed successfully! Kitchen has been notified.
+                    </div>
+                )}
+
+                <div className="flex flex-col md:flex-row gap-6 md:h-[calc(100vh-120px)]">
+                    {/* Left Side: Cart */}
+                    <div className="md:w-[340px] flex-shrink-0">
+                        <div className="bg-white rounded-2xl shadow-sm border border-amber-100 p-5 md:sticky md:top-20 flex flex-col md:max-h-[calc(100vh-140px)]">
+                            <h2 className="text-lg font-bold text-gray-800 mb-4">Your Order</h2>
+
+                            {/* Guest selector */}
                             <div className="mb-4">
-                                <label className="block text-xs font-bold text-black mb-1 uppercase tracking-wider">Your Location</label>
+                                <label className="block text-xs font-semibold text-gray-500 mb-1.5 uppercase tracking-wider">
+                                    Select Your Room / Bed
+                                </label>
                                 <select
                                     value={selectedGuestId}
                                     onChange={(e) => setSelectedGuestId(e.target.value)}
-                                    className="w-full p-2 text-sm border border-yellow-300 rounded-md bg-white text-black focus:ring-2 focus:ring-yellow-400 font-bold"
+                                    className="w-full p-3 text-sm border border-gray-200 rounded-xl bg-gray-50/50 text-gray-800 focus:ring-2 focus:ring-amber-400 focus:border-amber-400 font-semibold outline-none transition-all"
                                 >
-                                    <option value="" className="text-gray-500">Select Room / Bed</option>
+                                    <option value="">Choose location...</option>
                                     {occupiedLocations.map((loc: any) => (
-                                        <option key={loc.id} value={loc.id} className="text-black font-bold">{loc.name}</option>
+                                        <option key={loc.id} value={loc.id}>{loc.name}</option>
                                     ))}
                                 </select>
                             </div>
 
-                            {success && (
-                                <div className="bg-green-500 text-white p-3 rounded-md text-center text-sm font-bold shadow-md animate-bounce mb-4">
-                                    Order Placed!
-                                </div>
-                            )}
-                        </div>
-
-                        {/* Cart Summary (Compact) */}
-                        {cart.length > 0 ? (
-                            <div className="bg-white border-2 border-yellow-400 rounded-lg p-3 flex-1 flex flex-col">
-                                <h3 className="font-bold text-sm mb-2 border-b border-gray-200 pb-1 flex justify-between items-center text-black">
-                                    <span>Your Cart</span>
-                                    <span className="bg-yellow-200 text-black px-2 py-0.5 rounded text-xs font-bold">{cart.length} items</span>
-                                </h3>
-                                <div className="space-y-2 mb-3 flex-1 overflow-y-auto pr-1 custom-scrollbar">
-                                    {cart.map((item) => (
-                                        <div key={item.id} className="flex justify-between items-center text-sm bg-yellow-50 p-2 rounded border border-yellow-100">
-                                            <div className="flex-1">
-                                                <div className="font-bold text-black">{item.name}</div>
-                                                <div className="text-xs text-gray-600 font-bold">₹{item.price} x {item.qty}</div>
-                                            </div>
-                                            <div className="flex items-center gap-2">
-                                                <div className="flex items-center bg-gray-100 rounded border border-gray-300">
-                                                    <button onClick={() => updateQty(item.id, -1)} className="px-2 py-1 text-xs hover:bg-gray-200 disabled:opacity-50 font-bold text-black" disabled={item.qty <= 1}>-</button>
-                                                    <span className="text-xs w-4 text-center font-bold text-black">{item.qty}</span>
-                                                    <button onClick={() => updateQty(item.id, 1)} className="px-2 py-1 text-xs hover:bg-gray-200 font-bold text-black">+</button>
+                            {/* Cart items */}
+                            {cart.length > 0 ? (
+                                <>
+                                    <div className="space-y-2 flex-1 overflow-y-auto pr-1 mb-4">
+                                        {cart.map((item) => (
+                                            <div key={item.id} className="flex items-center gap-3 bg-gray-50 p-3 rounded-xl border border-gray-100">
+                                                <div className="flex-1 min-w-0">
+                                                    <p className="font-semibold text-gray-800 text-sm truncate">{item.name}</p>
+                                                    <p className="text-xs text-gray-400 font-medium">₹{item.price} × {item.qty} = ₹{item.price * item.qty}</p>
                                                 </div>
-                                                <button onClick={() => removeFromCart(item.id)} className="text-red-500 hover:text-red-700 p-1 rounded transition ml-1">
+                                                <div className="flex items-center gap-1 bg-white rounded-lg border border-gray-200">
+                                                    <button onClick={() => updateQty(item.id, -1)} className="px-2 py-1 text-sm hover:bg-gray-50 disabled:opacity-30 font-bold text-gray-600 rounded-l-lg transition-colors" disabled={item.qty <= 1}>−</button>
+                                                    <span className="text-sm w-6 text-center font-bold text-gray-800">{item.qty}</span>
+                                                    <button onClick={() => updateQty(item.id, 1)} className="px-2 py-1 text-sm hover:bg-gray-50 font-bold text-gray-600 rounded-r-lg transition-colors">+</button>
+                                                </div>
+                                                <button onClick={() => removeFromCart(item.id)} className="text-red-400 hover:text-red-600 p-1 transition-colors">
                                                     <Trash2 className="w-4 h-4" />
                                                 </button>
                                             </div>
-                                        </div>
-                                    ))}
-                                </div>
-                                <div className="mt-auto">
-                                    <div className="flex justify-between font-black text-base pt-2 border-t border-gray-200 mb-3 text-black">
-                                        <span>Total</span>
-                                        <span>₹{total}</span>
+                                        ))}
                                     </div>
-                                    <button
-                                        onClick={handleOrder}
-                                        disabled={loading}
-                                        className="w-full bg-black text-white py-3 rounded-md font-bold hover:bg-gray-800 disabled:opacity-50 transition-colors shadow-sm text-sm"
-                                    >
-                                        {loading ? 'Placing...' : `Confirm Order`}
-                                    </button>
+                                    <div className="border-t border-gray-100 pt-3">
+                                        <div className="flex justify-between font-black text-lg text-gray-800 mb-3">
+                                            <span>Total</span>
+                                            <span>₹{total}</span>
+                                        </div>
+                                        <button
+                                            onClick={handleOrder}
+                                            disabled={loading || !selectedGuestId}
+                                            className="w-full bg-gradient-to-r from-amber-500 to-orange-500 text-white py-3 rounded-xl font-bold hover:from-amber-600 hover:to-orange-600 disabled:opacity-50 transition-all shadow-lg shadow-amber-200/50 active:scale-[0.98] text-sm"
+                                        >
+                                            {loading ? (
+                                                <span className="flex items-center justify-center gap-2">
+                                                    <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                                                    Placing Order...
+                                                </span>
+                                            ) : (
+                                                `Place Order — ₹${total}`
+                                            )}
+                                        </button>
+                                    </div>
+                                </>
+                            ) : (
+                                <div className="flex-1 flex flex-col items-center justify-center text-center py-8">
+                                    <ShoppingCart className="w-12 h-12 text-gray-200 mb-3" />
+                                    <p className="text-gray-400 font-medium text-sm">Your cart is empty</p>
+                                    <p className="text-gray-300 text-xs mt-1">Browse the menu to add items</p>
                                 </div>
-                            </div>
-                        ) : (
-                            <div className="flex-1 flex items-center justify-center text-gray-400 text-sm font-medium border-2 border-dashed border-gray-300 rounded-lg">
-                                Cart is empty
-                            </div>
-                        )}
+                            )}
+                        </div>
                     </div>
 
                     {/* Right Side: Menu */}
-                    <div className="md:w-2/3 p-8 bg-yellow-50 h-[800px] overflow-y-auto">
-                        <h3 className="text-xl font-black text-black mb-6 sticky top-0 bg-yellow-50 py-2 z-10 border-b border-yellow-200">Menu</h3>
+                    <div className="flex-1 md:overflow-y-auto pb-8">
+                        <h2 className="text-xl font-bold text-gray-800 mb-5 sticky top-0 bg-gradient-to-br from-amber-50 via-orange-50 to-yellow-50 py-2 z-10">
+                            Menu
+                        </h2>
                         {!menuItems ? (
-                            <div className="text-center py-10 text-gray-500 font-bold">Loading menu...</div>
+                            <div className="flex items-center justify-center py-20">
+                                <div className="w-8 h-8 border-3 border-amber-200 border-t-amber-500 rounded-full animate-spin" />
+                            </div>
                         ) : (
                             <div className="space-y-8">
                                 {['Breakfast', 'Lunch', 'Dinner', 'Snacks', 'Beverages'].map(category => {
@@ -192,34 +221,55 @@ export default function GuestOrderPage() {
 
                                     return (
                                         <div key={category}>
-                                            <h4 className="font-bold text-lg text-black mb-4 border-l-4 border-black pl-3">{category}</h4>
-                                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                                                {categoryItems.map((item: any) => (
-                                                    <button
-                                                        key={item.id}
-                                                        onClick={() => addToCart(item)}
-                                                        className="p-4 bg-white border border-gray-200 rounded-xl hover:shadow-md hover:border-yellow-400 text-left transition-all duration-200 group relative overflow-hidden"
-                                                    >
-                                                        <div className="relative z-10 w-full">
-                                                            <div className="flex justify-between items-start mb-1">
-                                                                <h4 className="font-bold text-black group-hover:text-yellow-700 transition-colors">{item.name}</h4>
-                                                                <span className="bg-yellow-100 text-black text-xs font-bold px-2 py-1 rounded-full">₹{item.price}</span>
+                                            <h3 className="font-bold text-base text-gray-700 mb-3 flex items-center gap-2">
+                                                <span className="w-1 h-5 bg-gradient-to-b from-amber-400 to-orange-400 rounded-full" />
+                                                {category}
+                                            </h3>
+                                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                                                {categoryItems.map((item: any) => {
+                                                    const inCart = cart.find(c => c.id === item.id)
+                                                    return (
+                                                        <button
+                                                            key={item.id}
+                                                            onClick={() => addToCart(item)}
+                                                            className={`
+                                                                p-4 rounded-2xl text-left transition-all duration-200 group relative overflow-hidden active:scale-[0.97]
+                                                                ${inCart
+                                                                    ? 'bg-amber-50 border-2 border-amber-300 shadow-sm'
+                                                                    : 'bg-white border border-gray-100 hover:border-amber-200 hover:shadow-md'
+                                                                }
+                                                            `}
+                                                        >
+                                                            <div className="relative z-10">
+                                                                <div className="flex justify-between items-start">
+                                                                    <h4 className="font-semibold text-gray-800 text-sm">{item.name}</h4>
+                                                                    <span className="bg-amber-100 text-amber-800 text-xs font-bold px-2 py-0.5 rounded-full ml-2 flex-shrink-0">
+                                                                        ₹{item.price}
+                                                                    </span>
+                                                                </div>
+                                                                {inCart && (
+                                                                    <span className="text-xs text-amber-600 font-semibold mt-1 inline-block">
+                                                                        ×{inCart.qty} in cart
+                                                                    </span>
+                                                                )}
                                                             </div>
-                                                            <p className="text-xs text-gray-600 font-medium">{item.category}</p>
-                                                        </div>
-                                                        <div className="absolute inset-0 bg-yellow-50 opacity-0 group-hover:opacity-100 transition-opacity duration-200" />
-                                                        <div className="absolute bottom-2 right-2 opacity-0 group-hover:opacity-100 transition-all duration-200 transform translate-y-2 group-hover:translate-y-0 text-black">
-                                                            <Plus className="w-5 h-5" />
-                                                        </div>
-                                                    </button>
-                                                ))}
+                                                            <div className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-all duration-200">
+                                                                <div className="w-7 h-7 bg-amber-500 rounded-full flex items-center justify-center shadow-sm">
+                                                                    <Plus className="w-4 h-4 text-white" />
+                                                                </div>
+                                                            </div>
+                                                        </button>
+                                                    )
+                                                })}
                                             </div>
                                         </div>
                                     )
                                 })}
 
                                 {menuItems.filter((i: any) => i.isAvailable).length === 0 && (
-                                    <p className="text-gray-500 text-center py-10 font-bold">No items available right now.</p>
+                                    <div className="text-center py-20">
+                                        <p className="text-gray-400 font-medium">No items available right now</p>
+                                    </div>
                                 )}
                             </div>
                         )}

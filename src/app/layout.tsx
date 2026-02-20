@@ -16,7 +16,7 @@ export const metadata: Metadata = {
   title: "PushkarStay PMS",
   description: "Hostel Management System",
   manifest: "/manifest.json",
-  themeColor: "#2563eb",
+  themeColor: "#f59e0b",
   appleWebApp: {
     capable: true,
     statusBarStyle: "default",

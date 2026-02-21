@@ -1,0 +1,45 @@
+﻿node.exe : Vercel CLI 
+41.6.0
+At line:1 char:1
++ & "C:\Program 
+Files\nodejs/node.exe" "C:
+\Users\DELL\AppData\Roamin
+g\n ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo        
+      : NotSpecified: (V  
+  ercel CLI 41.6.0:Stri   
+ ng) [], RemoteExcepti    
+on
+    + FullyQualifiedError 
+   Id : NativeCommandErr  
+  or
+ 
+Retrieving projectΓÇª
+Deploying antaryaapps-proj
+ects/hostel-pms
+Uploading 
+[--------------------] 
+(0.0B/4.2KB)
+Uploading 
+[========------------] 
+(1.7KB/4.2KB)
+Uploading 
+[===========---------] 
+(2.4KB/4.2KB)
+Uploading 
+[====================] 
+(4.2KB/4.2KB)
+Inspect: https://vercel.co
+m/antaryaapps-projects/hos
+tel-pms/ActYWc1jH1ZqyqPzzA
+r5zJ3evKMW [4s]
+Production: https://hostel
+-oobuyoujd-antaryaapps-pro
+jects.vercel.app [4s]
+Building
+Building
+Completing
+https://hostel-oobuyoujd-antaryaapps-projects.vercel.app

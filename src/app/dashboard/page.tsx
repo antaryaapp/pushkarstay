@@ -2,16 +2,32 @@
 
 import useSWR from 'swr'
 import { Home, Bed, Utensils, Bell } from 'lucide-react'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { RoomCard } from '@/components/features/RoomCard'
+import { BedCard } from '@/components/features/BedCard'
+import { CheckInModal } from '@/components/features/CheckInModal'
 
 const fetcher = (url: string) => fetch(url).then(r => r.json())
 
 export default function Dashboard() {
     // Poll every 2 seconds for real-time updates
     const { data, error, mutate } = useSWR('/api/dashboard', fetcher, { refreshInterval: 2000 })
+    const { data: activeGuests } = useSWR('/api/guests?status=CHECKED_IN', fetcher)
     const { data: orders, mutate: mutateOrders } = useSWR('/api/orders?status=PENDING', fetcher, { refreshInterval: 5000 })
 
     const [selectedItem, setSelectedItem] = useState<any>(null)
+    const [lastOrderCount, setLastOrderCount] = useState(0)
+
+    // Notification Logic
+    useEffect(() => {
+        if (orders && orders.length > lastOrderCount) {
+            // New order arrived!
+            if (typeof window !== 'undefined' && 'Notification' in window && Notification.permission === 'granted') {
+                new Notification("New Food Order!", { body: `New order from ${orders[0].guest?.name || 'Guest'}` })
+            }
+        }
+        setLastOrderCount(orders?.length || 0)
+    }, [orders, lastOrderCount])
 
     if (error) return (
         <div className="flex items-center justify-center min-h-[50vh]">
@@ -155,9 +171,9 @@ export default function Dashboard() {
                                 orders.map((order: any) => (
                                     <div key={order.id} className="border border-gray-100 p-3 rounded-xl bg-gray-50/50 hover:bg-amber-50/50 transition-colors">
                                         <div className="text-sm font-bold flex justify-between text-gray-800">
-                                            <span>{order.guest.name}</span>
+                                            <span>{order.guest?.name || 'Deleted Guest'}</span>
                                             <span className="text-xs bg-amber-100 text-amber-700 px-2 py-0.5 rounded-full font-semibold">
-                                                {order.guest.room ? order.guest.room.roomNumber : `Bed ${order.guest.dormBed?.bedNumber}`}
+                                                {order.guest?.room ? order.guest.room.roomNumber : `Bed ${order.guest?.dormBed?.bedNumber || '?'}`}
                                             </span>
                                         </div>
                                         <div className="text-sm mt-2 text-gray-600">
@@ -221,7 +237,3 @@ export default function Dashboard() {
         </div>
     )
 }
-
-import { RoomCard } from '@/components/features/RoomCard'
-import { BedCard } from '@/components/features/BedCard'
-import { CheckInModal } from '@/components/features/CheckInModal'

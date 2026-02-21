@@ -59,7 +59,7 @@ export default function DashboardLayout({
                 <h1 className="text-2xl font-black bg-gradient-to-r from-amber-600 to-orange-500 bg-clip-text text-transparent">
                     PushkarStay
                 </h1>
-                <p className="text-xs text-gray-400 mt-1 font-medium">Hotel Management System</p>
+                <p className="text-xs text-gray-400 mt-1 font-medium">Varanasi</p>
             </div>
 
             <nav className="flex-1 p-4 space-y-1.5 overflow-y-auto">

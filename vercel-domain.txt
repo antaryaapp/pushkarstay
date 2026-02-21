@@ -1,0 +1,36 @@
+﻿node.exe : Vercel 
+CLI 41.6.0
+At line:1 char:1
++ & "C:\Program Files
+\nodejs/node.exe" "C:
+\Users\DELL\AppData\R
+oaming\n ...
++ ~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~
+    + CategoryInfo   
+           : NotSpe  
+  cified: (Vercel    
+ CLI 41.6.0:Strin    
+g) [], RemoteExc    
+eption
+    + FullyQualified 
+   ErrorId : Native  
+  CommandError
+ 
+Retrieving projectΓÇª
+Adding domain hostel-
+pms-antaryaapp.vercel
+.app to project 
+hostel-pms
+> Success! Domain hos
+tel-pms-antaryaapp.ve
+rcel.app added to 
+project hostel-pms. 
+[378ms]
+> The domain will 
+automatically get 
+assigned to your 
+latest production 
+deployment.

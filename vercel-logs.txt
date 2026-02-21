@@ -1,0 +1,39 @@
+﻿node.exe : Vercel CLI 
+41.6.0
+At line:1 char:1
++ & "C:\Program 
+Files\nodejs/node.exe" "C:
+\Users\DELL\AppData\Roamin
+g\n ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo        
+      : NotSpecified: (V  
+  ercel CLI 41.6.0:Stri   
+ ng) [], RemoteExcepti    
+on
+    + FullyQualifiedError 
+   Id : NativeCommandErr  
+  or
+ 
+Fetching deployment "hoste
+l-oobuyoujd-antaryaapps-pr
+ojects.vercel.app" in 
+antaryaapps-projects
+WARN! This command now 
+displays runtime logs. To 
+access your build logs, 
+run `vercel inspect 
+--logs hostel-oobuyoujd-an
+taryaapps-projects.vercel.
+app`
+Displaying runtime logs 
+for deployment hostel-oobu
+youjd-antaryaapps-projects
+.vercel.app (dpl_ActYWc1jH
+1ZqyqPzzAr5zJ3evKMW) 
+starting from Feb Sa 
+17:47:00.52
+
+waiting for new logs...

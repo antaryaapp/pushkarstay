@@ -1,7 +1,7 @@
 {
     "name": "PushkarStay Hostel PMS",
     "short_name": "PushkarStay",
-    "description": "Hotel Management System",
+    "description": "Varanasi",
     "start_url": "/dashboard",
     "display": "standalone",
     "background_color": "#fffbf0",

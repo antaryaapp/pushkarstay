@@ -1,0 +1,61 @@
+﻿node.exe : Vercel 
+CLI 41.6.0
+At line:1 char:1
++ & "C:\Program Files
+\nodejs/node.exe" "C:
+\Users\DELL\AppData\R
+oaming\n ...
++ ~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~
+    + CategoryInfo   
+           : NotSpe  
+  cified: (Vercel    
+ CLI 41.6.0:Strin    
+g) [], RemoteExc    
+eption
+    + FullyQualified 
+   ErrorId : Native  
+  CommandError
+ 
+Retrieving projectΓÇª
+Fetching deployments 
+in 
+antaryaapps-projects
+> Deployments for ant
+aryaapps-projects/hos
+tel-pms [335ms]
+
+  Age     Deployment 
+                     
+                     
+        Status      
+Environment     
+Duration     
+Username       
+  6m      https://hos
+tel-l2ozr42yn-antarya
+apps-projects.vercel.
+app     ΓùÅ Ready    
+ Production      25s 
+         antaryaapp  
+   
+  44m     https://hos
+tel-if5re0p0x-antarya
+apps-projects.vercel.
+app     ΓùÅ Ready    
+ Production      28s 
+         antaryaapp  
+   
+  46m     https://hos
+tel-692xmrktf-antarya
+apps-projects.vercel.
+app     ΓùÅ Ready    
+ Production      39s 
+         antaryaapp  
+   
+
+https://hostel-l2ozr42yn-antaryaapps-projects.vercel.app
+https://hostel-if5re0p0x-antaryaapps-projects.vercel.app
+https://hostel-692xmrktf-antaryaapps-projects.vercel.app

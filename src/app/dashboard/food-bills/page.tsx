@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import useSWR from 'swr'
-import { Receipt, Search, FileDown, Clock, CheckCircle, CreditCard } from 'lucide-react'
+import { Receipt, Search, FileDown, Clock, CheckCircle, CreditCard, Trash2 } from 'lucide-react'
 
 const fetcher = (url: string) => fetch(url).then(r => r.json())
 
@@ -44,6 +44,16 @@ export default function FoodBillsPage() {
         } catch (e) {
             alert('Failed to update status')
             mutate()
+        }
+    }
+
+    const handleDeleteOrder = async (id: string) => {
+        if (!confirm('Delete this food order?')) return
+        try {
+            await fetch(`/api/orders?id=${id}`, { method: 'DELETE' })
+            mutate()
+        } catch (e) {
+            alert('Failed to delete order')
         }
     }
 
@@ -149,6 +159,7 @@ export default function FoodBillsPage() {
                                 <th className="px-5 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Items</th>
                                 <th className="px-5 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Amount</th>
                                 <th className="px-5 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Status</th>
+                                <th className="px-5 py-3 text-right text-xs font-semibold text-gray-500 uppercase tracking-wider">Action</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-gray-50">
@@ -200,6 +211,15 @@ export default function FoodBillsPage() {
                                                     <option value="COMPLETED">Served</option>
                                                     <option value="PAID">Paid</option>
                                                 </select>
+                                            </td>
+                                            <td className="px-5 py-3 text-right">
+                                                <button
+                                                    onClick={() => handleDeleteOrder(order.id)}
+                                                    className="text-red-500 hover:text-red-700 p-1.5 rounded-lg bg-red-50 border border-red-100 transition-colors"
+                                                    title="Delete Order"
+                                                >
+                                                    <Trash2 className="w-4 h-4" />
+                                                </button>
                                             </td>
                                         </tr>
                                     )

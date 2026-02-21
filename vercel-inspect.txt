@@ -1,0 +1,73 @@
+﻿node.exe : Vercel 
+CLI 41.6.0
+At line:1 char:1
++ & "C:\Program Files
+\nodejs/node.exe" "C:
+\Users\DELL\AppData\R
+oaming\n ...
++ ~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~
+    + CategoryInfo   
+           : 
+NotSpecified: (V    
+ercel CLI 
+41.6.0:Stri    ng) 
+[], RemoteExcepti    
+on
+    + 
+FullyQualifiedError  
+  Id : 
+NativeCommandErr    
+or
+ 
+Fetching deployment "
+hostel-l2ozr42yn-anta
+ryaapps-projects.verc
+el.app" in 
+antaryaapps-projects
+> Fetched deployment 
+"hostel-l2ozr42yn-ant
+aryaapps-projects.ver
+cel.app" in 
+antaryaapps-projects 
+[585ms]
+
+  General
+
+    id		dpl_58kuw1iko
+VZekqGzKnR2kbFhtGq9
+    name	hostel-pms
+    target	production
+    status	ΓùÅ Ready
+    url		https://host
+el-l2ozr42yn-antaryaa
+pps-projects.vercel.a
+pp
+    created	Sat Feb 
+21 2026 17:35:29 
+GMT+0530 (India 
+Standard Time) [9m 
+ago]
+
+
+  Aliases
+
+    Γò╢ https://hoste
+l-pms.vercel.app
+    Γò╢ https://hoste
+l-pms-antaryaapps-pro
+jects.vercel.app
+    Γò╢ https://hoste
+l-pms-antaryaapp-anta
+ryaapps-projects.verc
+el.app
+    
+
+  Builds
+
+    Γò╢ .        
+[0ms]
+    
+

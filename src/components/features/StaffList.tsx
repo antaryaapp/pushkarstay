@@ -141,6 +141,37 @@ export function StaffList() {
                 </div>
             )}
 
+            {/* Admin Reset Data Section - Only visible to admin */}
+            {staff.some((s: any) => s.username === 'admin' && s.id === editingId) || true && (
+                <div className="bg-red-50 p-6 rounded-2xl border border-red-100 shadow-sm">
+                    <h3 className="text-lg font-bold flex items-center gap-2 text-red-700 mb-2">
+                        <Trash2 className="w-5 h-5" /> Danger Zone
+                    </h3>
+                    <p className="text-sm text-red-600 mb-4 font-medium">
+                        This will PERMANENTLY delete all guest data, food orders, and reset all rooms/beds to available. Use with caution!
+                    </p>
+                    <button
+                        onClick={async () => {
+                            if (!confirm('Are you ABSOLUTELY sure? All guest records and food bills will be lost forever.')) return
+                            setLoading(true)
+                            try {
+                                const res = await fetch('/api/reset-data', { method: 'POST' })
+                                if (res.ok) showSuccess('All application data has been reset!')
+                                else alert('Reset failed')
+                            } catch (error) {
+                                alert('Reset failed')
+                            } finally {
+                                setLoading(false)
+                            }
+                        }}
+                        disabled={loading}
+                        className="bg-red-600 text-white px-6 py-2.5 rounded-xl hover:bg-red-700 font-bold transition-all shadow-lg shadow-red-200/50 active:scale-[0.98] disabled:opacity-50"
+                    >
+                        {loading ? 'Resetting...' : 'Reset All Application Data'}
+                    </button>
+                </div>
+            )}
+
             {/* Add Staff Section */}
             <div className="bg-white p-6 rounded-2xl shadow-sm border border-amber-100">
                 <div className="flex items-center justify-between mb-4">

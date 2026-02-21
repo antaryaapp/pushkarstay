@@ -2,18 +2,18 @@
 
 import { useState } from 'react'
 import useSWR from 'swr'
-import { Edit2, Save, X, Loader2, Search, Users, CalendarClock, Phone, MapPin, CreditCard, UserCheck, History } from 'lucide-react'
+import { Edit2, Save, X, Loader2, Search, Users, CalendarClock, Phone, MapPin, CreditCard, UserCheck, History, Trash2 } from 'lucide-react'
 
 const fetcher = (url: string) => fetch(url).then(r => r.json())
 
-type Tab = 'active' | 'today_checkout' | 'all'
+type GuestTab = 'active' | 'today_checkout' | 'all'
 
 export default function GuestPage() {
-    const [tab, setTab] = useState<Tab>('active')
+    const [tab, setTab] = useState<GuestTab>('active')
     const [search, setSearch] = useState('')
 
     const { data: activeGuests, mutate: mutateActive } = useSWR('/api/guests?status=CHECKED_IN', fetcher)
-    const { data: allGuests } = useSWR('/api/guests', fetcher)
+    const { data: allGuests, mutate: mutateAll } = useSWR('/api/guests', fetcher)
 
     const [editingId, setEditingId] = useState<string | null>(null)
     const [editForm, setEditForm] = useState({ name: '', mobile: '', city: '', paymentMode: '' })
@@ -38,8 +38,24 @@ export default function GuestPage() {
             })
             setEditingId(null)
             mutateActive()
+            mutateAll()
         } catch (error) {
             console.error('Failed to update guest', error)
+        }
+    }
+
+    const handleDelete = async (id: string) => {
+        if (!confirm('Are you sure? This will PERMANENTLY delete the guest and all their food orders. This action cannot be undone.')) return
+        try {
+            const res = await fetch(`/api/guests/${id}`, { method: 'DELETE' })
+            if (res.ok) {
+                mutateActive()
+                mutateAll()
+            } else {
+                alert('Failed to delete guest')
+            }
+        } catch (error) {
+            console.error('Delete failed', error)
         }
     }
 
@@ -221,7 +237,7 @@ export default function GuestPage() {
                                                 <th className="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">City</th>
                                                 <th className="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Payment</th>
                                                 <th className="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Status</th>
-                                                {tab === 'active' && <th className="px-6 py-3 text-right text-xs font-semibold text-gray-500 uppercase tracking-wider">Actions</th>}
+                                                <th className="px-6 py-3 text-right text-xs font-semibold text-gray-500 uppercase tracking-wider">Actions</th>
                                             </tr>
                                         </thead>
                                         <tbody className="divide-y divide-gray-50">
@@ -302,24 +318,31 @@ export default function GuestPage() {
                                                                 {guest.status === 'CHECKED_IN' ? 'Active' : 'Checked Out'}
                                                             </span>
                                                         </td>
-                                                        {tab === 'active' && (
-                                                            <td className="px-6 py-4 whitespace-nowrap text-right text-sm">
-                                                                {editingId === guest.id ? (
-                                                                    <div className="flex gap-2 justify-end">
-                                                                        <button onClick={() => saveEdit(guest.id)} className="text-emerald-600 bg-emerald-50 p-1.5 rounded-lg border border-emerald-200 hover:bg-emerald-100 transition-colors">
-                                                                            <Save className="w-4 h-4" />
-                                                                        </button>
-                                                                        <button onClick={cancelEdit} className="text-gray-500 bg-gray-50 p-1.5 rounded-lg border border-gray-200 hover:bg-gray-100 transition-colors">
-                                                                            <X className="w-4 h-4" />
-                                                                        </button>
-                                                                    </div>
-                                                                ) : (
-                                                                    <button onClick={() => startEdit(guest)} className="text-amber-600 bg-amber-50 p-1.5 rounded-lg border border-amber-200 hover:bg-amber-100 transition-colors">
-                                                                        <Edit2 className="w-4 h-4" />
-                                                                    </button>
+                                                        <td className="px-6 py-4 whitespace-nowrap text-right text-sm">
+                                                            <div className="flex gap-2 justify-end">
+                                                                {tab === 'active' && (
+                                                                    <>
+                                                                        {editingId === guest.id ? (
+                                                                            <>
+                                                                                <button onClick={() => saveEdit(guest.id)} className="text-emerald-600 bg-emerald-50 p-1.5 rounded-lg border border-emerald-200 hover:bg-emerald-100 transition-colors">
+                                                                                    <Save className="w-4 h-4" />
+                                                                                </button>
+                                                                                <button onClick={cancelEdit} className="text-gray-500 bg-gray-50 p-1.5 rounded-lg border border-gray-200 hover:bg-gray-100 transition-colors">
+                                                                                    <X className="w-4 h-4" />
+                                                                                </button>
+                                                                            </>
+                                                                        ) : (
+                                                                            <button onClick={() => startEdit(guest)} className="text-amber-600 bg-amber-50 p-1.5 rounded-lg border border-amber-200 hover:bg-amber-100 transition-colors">
+                                                                                <Edit2 className="w-4 h-4" />
+                                                                            </button>
+                                                                        )}
+                                                                    </>
                                                                 )}
-                                                            </td>
-                                                        )}
+                                                                <button onClick={() => handleDelete(guest.id)} className="text-red-500 bg-red-50 p-1.5 rounded-lg border border-red-200 hover:bg-red-100 transition-colors">
+                                                                    <Trash2 className="w-4 h-4" />
+                                                                </button>
+                                                            </div>
+                                                        </td>
                                                     </tr>
                                                 )
                                             })}

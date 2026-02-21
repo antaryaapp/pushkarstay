@@ -54,7 +54,7 @@ export default function LoginPage() {
         <h1 className="text-2xl font-black text-center mb-1 bg-gradient-to-r from-amber-700 to-orange-600 bg-clip-text text-transparent">
           PushkarStay
         </h1>
-        <p className="text-sm text-gray-400 text-center mb-6">Hotel Management System</p>
+        <p className="text-sm text-gray-400 text-center mb-6">Varanasi</p>
 
         {error && (
           <div className="bg-red-50 text-red-600 p-3 rounded-xl mb-4 text-sm text-center font-semibold border border-red-100 animate-shake">

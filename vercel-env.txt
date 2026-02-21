@@ -1,0 +1,27 @@
+﻿node.exe : Vercel CLI 
+41.6.0
+At line:1 char:1
++ & "C:\Program 
+Files\nodejs/node.exe" "C:
+\Users\DELL\AppData\Roamin
+g\n ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo        
+      : NotSpecified: (V  
+  ercel CLI 41.6.0:Stri   
+ ng) [], RemoteExcepti    
+on
+    + FullyQualifiedError 
+   Id : NativeCommandErr  
+  or
+ 
+Retrieving projectΓÇª
+> Environment Variables 
+found for antaryaapps-proj
+ects/hostel-pms [335ms]
+
+ name               value               environments                        created    
+ DATABASE_URL       Encrypted           Production, Preview, Development    1d ago     
+

@@ -15,7 +15,7 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "PushkarStay PMS",
-  description: "Hostel Management System",
+  description: "Varanasi",
   manifest: "/manifest.json",
   themeColor: "#f59e0b",
   appleWebApp: {

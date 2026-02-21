@@ -3,8 +3,11 @@ import { prisma } from '@/lib/prisma'
 
 export async function POST(request: Request) {
     try {
-        // Authenticate - For now, we assume only admin can call this
-        // In a real app, check session/token here.
+        // TODO: Add authentication check here
+        // const session = await getSession(request)
+        // if (!session?.user?.isAdmin) {
+        //     return NextResponse.json({ error: 'Unauthorized' }, { status: 403 })
+        // }
 
         await prisma.$transaction([
             // Delete all food orders

@@ -17,7 +17,7 @@ async function main() {
     update: {},
     create: {
       username: 'admin',
-      password: 'scrypt:admin123', // Placeholder for actual hash implementation
+      password: 'admin123',
     },
   })
   console.log({ staff })

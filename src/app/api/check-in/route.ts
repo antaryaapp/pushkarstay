@@ -3,7 +3,7 @@ import { prisma } from '@/lib/prisma'
 
 export async function POST(request: Request) {
     try {
-        const { name, roomId, dormBedId, mobile, city, paymentMode } = await request.json()
+        const { name, roomId, dormBedId, mobile, city, paymentMode, checkInDate, checkOutDate } = await request.json()
 
         if (!name || (!roomId && !dormBedId)) {
             return NextResponse.json({ error: 'Missing required fields' }, { status: 400 })
@@ -17,6 +17,8 @@ export async function POST(request: Request) {
                     mobile: mobile || "",
                     city: city || "",
                     paymentMode: paymentMode || "CASH",
+                    checkInDate: checkInDate ? new Date(checkInDate) : new Date(),
+                    checkOutDate: checkOutDate ? new Date(checkOutDate) : null,
                     roomId: roomId ? parseInt(roomId) : null,
                     dormBedId: dormBedId ? parseInt(dormBedId) : null,
                     status: 'CHECKED_IN'

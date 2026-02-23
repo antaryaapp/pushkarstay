@@ -49,8 +49,8 @@ export default function DashboardLayout({
         { href: '/dashboard/menu', icon: ChefHat, label: 'Menu Management', adminOnly: false },
         { href: '/dashboard/food-bills', icon: UtensilsCrossed, label: 'Food Bills', adminOnly: false },
         { href: '/dashboard/group-booking', icon: BookOpen, label: 'Group Booking', adminOnly: false },
-        { href: '/dashboard/staff', icon: Users, label: 'Staff Management', adminOnly: true },
-        { href: '/dashboard/reports', icon: BarChart, label: 'Reports & Data', adminOnly: true },
+        { href: '/dashboard/staff', icon: Users, label: 'Staff Management', adminOnly: false },
+        { href: '/dashboard/reports', icon: BarChart, label: 'Reports & Data', adminOnly: false },
     ]
 
     const SidebarContent = () => (

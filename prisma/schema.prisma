@@ -43,6 +43,7 @@ model Guest {
   checkOutDate      DateTime?
   status            String    @default("CHECKED_IN") // CHECKED_IN, CHECKED_OUT
   totalBill         Float     @default(0)
+  groupId           String?   // Links guests booked together
   
   // Relations
   roomId            Int?

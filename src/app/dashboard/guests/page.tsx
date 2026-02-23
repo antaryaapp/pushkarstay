@@ -17,6 +17,8 @@ export default function GuestPage() {
 
     const [editingId, setEditingId] = useState<string | null>(null)
     const [editForm, setEditForm] = useState({ name: '', mobile: '', city: '', paymentMode: '' })
+    const [selectedIds, setSelectedIds] = useState<string[]>([])
+    const [checkoutLoading, setCheckoutLoading] = useState(false)
 
     const startEdit = (guest: any) => {
         setEditingId(guest.id)
@@ -56,6 +58,48 @@ export default function GuestPage() {
             }
         } catch (error) {
             console.error('Delete failed', error)
+        }
+    }
+
+    const toggleSelect = (id: string) => {
+        setSelectedIds(prev =>
+            prev.includes(id) ? prev.filter(i => i !== id) : [...prev, id]
+        )
+    }
+
+    const toggleSelectAll = (filteredGuests: any[]) => {
+        if (selectedIds.length === filteredGuests.length && filteredGuests.length > 0) {
+            setSelectedIds([])
+        } else {
+            setSelectedIds(filteredGuests.map(g => g.id))
+        }
+    }
+
+    const handleGroupCheckout = async () => {
+        if (selectedIds.length === 0) return
+        if (!confirm(`Check out ${selectedIds.length} selected guests?`)) return
+
+        setCheckoutLoading(true)
+        try {
+            const res = await fetch('/api/check-out/group', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ guestIds: selectedIds })
+            })
+
+            if (res.ok) {
+                alert(`${selectedIds.length} guests checked out successfully!`)
+                setSelectedIds([])
+                mutateActive()
+                mutateAll()
+            } else {
+                alert('Group checkout failed')
+            }
+        } catch (error) {
+            console.error('Group checkout error', error)
+            alert('An error occurred during group checkout')
+        } finally {
+            setCheckoutLoading(false)
         }
     }
 
@@ -159,6 +203,22 @@ export default function GuestPage() {
                     All History
                     {allGuests && <span className="bg-white/20 px-2 py-0.5 rounded-full text-xs">{allGuests.length}</span>}
                 </button>
+
+                {/* Group Actions */}
+                {selectedIds.length > 0 && (
+                    <button
+                        onClick={handleGroupCheckout}
+                        disabled={checkoutLoading}
+                        className="flex items-center gap-2 px-6 py-2.5 rounded-xl text-sm font-bold bg-amber-600 text-white shadow-lg shadow-amber-200/50 hover:bg-amber-700 transition-all active:scale-[0.98] animate-in fade-in zoom-in duration-200"
+                    >
+                        {checkoutLoading ? (
+                            <Loader2 className="w-4 h-4 animate-spin" />
+                        ) : (
+                            <UserCheck className="w-4 h-4" />
+                        )}
+                        Check-out {selectedIds.length} Selected
+                    </button>
+                )}
             </div>
 
             {/* Loading */}
@@ -229,6 +289,14 @@ export default function GuestPage() {
                                     <table className="min-w-full divide-y divide-gray-100">
                                         <thead className="bg-gray-50/50">
                                             <tr>
+                                                <th className="px-4 py-3 text-left">
+                                                    <input
+                                                        type="checkbox"
+                                                        className="w-4 h-4 rounded border-gray-300 text-amber-600 focus:ring-amber-500"
+                                                        checked={guests.length > 0 && selectedIds.length === guests.length}
+                                                        onChange={() => toggleSelectAll(guests)}
+                                                    />
+                                                </th>
                                                 <th className="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Guest</th>
                                                 <th className="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Location</th>
                                                 <th className="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Check-in</th>
@@ -245,7 +313,17 @@ export default function GuestPage() {
                                                 const accom = getAccommodation(guest)
                                                 const nights = getNights(guest.checkInDate)
                                                 return (
-                                                    <tr key={guest.id} className="hover:bg-amber-50/30 transition-colors">
+                                                    <tr key={guest.id} className={`hover:bg-amber-50/30 transition-colors ${selectedIds.includes(guest.id) ? 'bg-amber-50/50' : ''}`}>
+                                                        <td className="px-4 py-4 whitespace-nowrap text-left">
+                                                            {guest.status === 'CHECKED_IN' && (
+                                                                <input
+                                                                    type="checkbox"
+                                                                    className="w-4 h-4 rounded border-gray-300 text-amber-600 focus:ring-amber-500"
+                                                                    checked={selectedIds.includes(guest.id)}
+                                                                    onChange={() => toggleSelect(guest.id)}
+                                                                />
+                                                            )}
+                                                        </td>
                                                         <td className="px-6 py-4 whitespace-nowrap">
                                                             {editingId === guest.id ? (
                                                                 <input

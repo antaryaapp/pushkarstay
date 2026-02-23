@@ -141,8 +141,17 @@ export function StaffList() {
                 </div>
             )}
 
-            {/* Admin Reset Data Section - Only visible to admin */}
-            {staff.some((s: any) => s.username === 'admin' && s.id === editingId) || true && (
+            {/* Admin Password & Reset Section */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="bg-amber-50 p-6 rounded-2xl border border-amber-100 shadow-sm">
+                    <h3 className="text-lg font-bold flex items-center gap-2 text-amber-800 mb-2">
+                        <Key className="w-5 h-5" /> Admin Security
+                    </h3>
+                    <p className="text-sm text-amber-700 mb-4 font-medium">
+                        To change the <strong>admin</strong> password, find the "admin" user in the table below and click the <Key className="w-3 h-3 inline" /> icon.
+                    </p>
+                </div>
+
                 <div className="bg-red-50 p-6 rounded-2xl border border-red-100 shadow-sm">
                     <h3 className="text-lg font-bold flex items-center gap-2 text-red-700 mb-2">
                         <Trash2 className="w-5 h-5" /> Danger Zone
@@ -170,7 +179,7 @@ export function StaffList() {
                         {loading ? 'Resetting...' : 'Reset All Application Data'}
                     </button>
                 </div>
-            )}
+            </div>
 
             {/* Add Staff Section */}
             <div className="bg-white p-6 rounded-2xl shadow-sm border border-amber-100">

@@ -5,9 +5,7 @@ export async function POST(request: Request) {
     try {
         const body = await request.json()
         const { guestDetails, roomIds, dormBedIds } = body
-        // guestDetails: { name, mobile, city, paymentMode }
-        // roomIds: number[]
-        // dormBedIds: number[]
+        const groupId = crypto.randomUUID()
 
         if ((!roomIds || roomIds.length === 0) && (!dormBedIds || dormBedIds.length === 0)) {
             return NextResponse.json({ error: 'No rooms or beds selected' }, { status: 400 })
@@ -19,21 +17,17 @@ export async function POST(request: Request) {
             // Process Rooms
             if (roomIds && roomIds.length > 0) {
                 for (const roomId of roomIds) {
-                    // Create guest for this room
                     const guest = await tx.guest.create({
                         data: {
-                            name: guestDetails.name + " (Group)", // Append group marker or keep same? User said "group booking".
-                            // Maybe just use the name. It's okay to have duplicates.
-                            // User said "update the details... no need to update in every bed".
-                            // So we copy the details.
+                            name: guestDetails.name,
                             mobile: guestDetails.mobile,
                             city: guestDetails.city,
                             paymentMode: guestDetails.paymentMode,
                             roomId: roomId,
+                            groupId: groupId,
                             status: 'CHECKED_IN'
                         }
                     })
-                    // Update Room Status
                     await tx.room.update({
                         where: { id: roomId },
                         data: { status: 'OCCUPIED' }
@@ -47,15 +41,15 @@ export async function POST(request: Request) {
                 for (const bedId of dormBedIds) {
                     const guest = await tx.guest.create({
                         data: {
-                            name: guestDetails.name + " (Group)",
+                            name: guestDetails.name,
                             mobile: guestDetails.mobile,
                             city: guestDetails.city,
                             paymentMode: guestDetails.paymentMode,
                             dormBedId: bedId,
+                            groupId: groupId,
                             status: 'CHECKED_IN'
                         }
                     })
-                    // Update Bed Status
                     await tx.dormBed.update({
                         where: { id: bedId },
                         data: { status: 'OCCUPIED' }

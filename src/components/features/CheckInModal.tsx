@@ -15,6 +15,8 @@ export function CheckInModal({ item, onClose, onUpdate }: CheckInModalProps) {
     const [loading, setLoading] = useState(false)
     const [showBill, setShowBill] = useState(false)
     const [billData, setBillData] = useState<any>(null)
+    const [checkInDate, setCheckInDate] = useState(new Date().toISOString().slice(0, 16))
+    const [checkOutDate, setCheckOutDate] = useState('')
 
     const isOccupied = item.status === 'OCCUPIED'
     const isRoom = !!item.roomNumber
@@ -31,6 +33,8 @@ export function CheckInModal({ item, onClose, onUpdate }: CheckInModalProps) {
             mobile,
             city,
             paymentMode,
+            checkInDate,
+            checkOutDate,
             roomId: isRoom ? item.id : undefined,
             dormBedId: !isRoom ? item.id : undefined
         }
@@ -274,6 +278,27 @@ export function CheckInModal({ item, onClose, onUpdate }: CheckInModalProps) {
                                     onChange={(e) => setCity(e.target.value)}
                                     className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-amber-400 focus:border-amber-400 outline-none text-gray-800 font-medium bg-gray-50/50 transition-all placeholder:text-gray-400"
                                     placeholder="e.g. Mumbai"
+                                />
+                            </div>
+                        </div>
+
+                        <div className="grid grid-cols-2 gap-3">
+                            <div>
+                                <label className="block text-sm font-semibold text-gray-600 mb-1.5">Check-in Date/Time</label>
+                                <input
+                                    type="datetime-local"
+                                    value={checkInDate}
+                                    onChange={(e) => setCheckInDate(e.target.value)}
+                                    className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-amber-400 focus:border-amber-400 outline-none text-gray-800 font-medium bg-gray-50/50 transition-all"
+                                />
+                            </div>
+                            <div>
+                                <label className="block text-sm font-semibold text-gray-600 mb-1.5">Check-out Date (Plan)</label>
+                                <input
+                                    type="date"
+                                    value={checkOutDate}
+                                    onChange={(e) => setCheckOutDate(e.target.value)}
+                                    className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-amber-400 focus:border-amber-400 outline-none text-gray-800 font-medium bg-gray-50/50 transition-all"
                                 />
                             </div>
                         </div>
